@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.db import connections
 from django.http import HttpResponse
