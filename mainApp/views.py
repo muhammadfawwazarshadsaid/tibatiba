@@ -54,7 +54,7 @@ from django.db import connection
 import openai
 
 def get_adjusted_query(user_query):
-    openai.api_key = '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'
+    openai.api_key = ''
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
