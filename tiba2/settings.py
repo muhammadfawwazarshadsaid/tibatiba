@@ -96,6 +96,19 @@ DATABASES = {
     },
   }
 }
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'tibatibadb',
+    'USER': 'tibatibadb_owner',
+    'PASSWORD': 'b1Tj6pAfaUOl',
+    'HOST': 'ep-lively-base-a5yra3fs.us-east-2.aws.neon.tech',
+    'PORT': '5432',
+    'OPTIONS': {
+      'sslmode': 'require',
+    },
+  }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
