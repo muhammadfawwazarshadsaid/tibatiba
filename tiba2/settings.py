@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-52u=8uxcga*b!nv-0h6&ls9irmy*fg4e+xqr3lr+kz6i*ocj&)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'tibatiba.vercel.app', '*', '.vercel.app']
 
 
 # Application definition
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tiba2.wsgi.application'
+WSGI_APPLICATION = 'tiba2.wsgi.app'
 
 
 # Database
@@ -86,13 +86,13 @@ WSGI_APPLICATION = 'tiba2.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': getenv('PGDATABASE'),
-    'USER': getenv('PGUSER'),
-    'PASSWORD': getenv('PGPASSWORD'),
-    'HOST': getenv('PGHOST'),
-    'PORT': getenv('PGPORT', 5432),
+    'NAME': 'tibatibadb',  # Replace with your DB name
+    'USER': 'tibatibadb_owner',  # Replace with your DB user
+    'PASSWORD': 'b1Tj6pAfaUOl',  # Replace with your DB password
+    'HOST': 'ep-lively-base-a5yra3fs.us-east-2.aws.neon.tech',  # Replace with your DB host
+    'PORT': '5432',
     'OPTIONS': {
-      'sslmode': 'require',
+      'sslmode': 'require',  # Set this to 'disable' or 'require'
     },
   }
 }
