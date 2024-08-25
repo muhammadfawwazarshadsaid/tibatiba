@@ -29,6 +29,7 @@ def testvercel(request):
     '''
     return HttpResponse(html)
 
+
 def get_users(request):
     try:
         # Get the database connection
