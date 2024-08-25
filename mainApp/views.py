@@ -10,7 +10,7 @@ genai.configure(api_key="AIzaSyDw8pJxo89LRpKy6UVJ_79hQVbSvY1fvHY")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 def extract_key_terms(user_query):
-    response = model.generate_content(f"Identify key location or relevant terms from the following query in one word: '{user_query}'")
+    response = model.generate_content(f"Identify key location or if there is no key location identify adjective terms in any language from the following query in one word: '{user_query}'")
     key_terms = response.text.strip().lower()
     return key_terms
 
