@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.db import connection
-import requests
 
 def getall(request):
     query = """
@@ -40,79 +39,69 @@ def getall(request):
 
     return JsonResponse(results, safe=False)
 
-# from django.shortcuts import render
-# from django.http import JsonResponse
-# from django.contrib.gis.geoip2 import GeoIP2
 
 # def getlocation(request):
-#     g = GeoIP2()
-#     remote_addr = request.META.get('HTTP_X_FORWARDED_FOR')
+#     remote_addr = "request.META.get('HTTP_X_FORWARDED_FOR')"
 #     if remote_addr:
 #         address = remote_addr.split(',')[-1].strip()
 #     else:
 #         address = request.META.get('REMOTE_ADDR')
-    
+
 #     try:
-#         # Mendapatkan lokasi berdasarkan IP
-#         city = g.city(address)
-#         city_name = city.get('city', 'Unknown')
-#         region_name = city.get('region', 'Unknown')
-#         x= g.city("103.213.130.249")
-#         x_city_name = x.get('city', 'Unknown')
-#         x_region_name = x.get('region', 'Unknown')
+#         # API endpoint untuk batch processing
+#         batch_endpoint = 'http://ip-api.com/batch'
         
-#         # Mengembalikan hasil dalam format JSON
-#         return JsonResponse({
-#             'kota': city_name,
-#             'provinsi': region_name,
-#             'kota2': x_city_name,
-#             'provinsi2': x_region_name
-
-#         })
+#         # Membuat payload untuk request POST
+#         payload = [address]
+        
+#         # Mengirimkan request POST ke API
+#         response = requests.post(batch_endpoint, json=payload)
+#         data = response.json()
+        
+#         # Memeriksa apakah ada hasil untuk IP yang diminta
+#         if data:
+#             result = data[0]  # Mengambil hasil dari batch response
+#             city_name = result.get('city', 'Unknown')
+#             region_name = result.get('regionName', 'Unknown')
+            
+#             return JsonResponse({
+#                 'alamatip': remote_addr,
+#                 'kota': city_name,
+#                 'provinsi': region_name
+#             })
+#         else:
+#             return JsonResponse({
+#                 'error': 'No data returned from IP-API'
+#             })
 #     except Exception as e:
-#         x= g.city("103.213.130.249")
-#         x_city_name = x.get('city', 'Unknown')
-#         x_region_name = x.get('region', 'Unknown')
 #         return JsonResponse({
-#             'error': str(e),
-#             'kota2': x_city_name,
-#             'provinsi2': x_region_name
+#             'error': str(e)
 #         })
-
+    
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.contrib.gis.geoip2 import GeoIP2
 
 def getlocation(request):
-    remote_addr = "request.META.get('HTTP_X_FORWARDED_FOR')"
+    g = GeoIP2()
+    remote_addr = request.META.get('HTTP_X_FORWARDED_FOR')
     if remote_addr:
         address = remote_addr.split(',')[-1].strip()
     else:
+        # address = request.META.get('103.60.233.178')
         address = request.META.get('REMOTE_ADDR')
-
+    
     try:
-        # API endpoint untuk batch processing
-        batch_endpoint = 'http://ip-api.com/batch'
+        # Mendapatkan lokasi berdasarkan IP
+        city = g.city(address)
+        city_name = city.get('city', 'Unknown')
+        region_name = city.get('region', 'Unknown')
         
-        # Membuat payload untuk request POST
-        payload = [address]
-        
-        # Mengirimkan request POST ke API
-        response = requests.post(batch_endpoint, json=payload)
-        data = response.json()
-        
-        # Memeriksa apakah ada hasil untuk IP yang diminta
-        if data:
-            result = data[0]  # Mengambil hasil dari batch response
-            city_name = result.get('city', 'Unknown')
-            region_name = result.get('regionName', 'Unknown')
-            
-            return JsonResponse({
-                'alamatip': remote_addr,
-                'kota': city_name,
-                'provinsi': region_name
-            })
-        else:
-            return JsonResponse({
-                'error': 'No data returned from IP-API'
-            })
+        # Mengembalikan hasil dalam format JSON
+        return JsonResponse({
+            'kota': city_name,
+            'provinsi': region_name
+        })
     except Exception as e:
         return JsonResponse({
             'error': str(e)
