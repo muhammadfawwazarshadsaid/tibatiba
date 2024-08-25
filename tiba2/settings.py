@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainApp'
+    'mainApp',
+    'oleholeh'
+
     
 ]
 
@@ -151,3 +153,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from pathlib import Path
+
+import os
+
+base_dir = '/Users/arshad/Documents/tibatiba/TIBATIBA'
+GEOIP_PATH = os.path.join(base_dir, 'oleholeh', 'GeoLite2-City.mmdb')
+print(os.path.exists(GEOIP_PATH))  # Ini harus True jika path benar
