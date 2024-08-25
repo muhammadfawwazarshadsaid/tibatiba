@@ -81,7 +81,7 @@ def getall(request):
 
 
 def getlocation(request):
-    remote_addr = request.META.get('HTTP_X_FORWARDED_FOR')
+    remote_addr = "request.META.get('HTTP_X_FORWARDED_FOR')"
     if remote_addr:
         address = remote_addr.split(',')[-1].strip()
     else:
@@ -105,6 +105,7 @@ def getlocation(request):
             region_name = result.get('regionName', 'Unknown')
             
             return JsonResponse({
+                'alamatip': remote_addr,
                 'kota': city_name,
                 'provinsi': region_name
             })
