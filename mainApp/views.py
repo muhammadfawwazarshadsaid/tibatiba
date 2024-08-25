@@ -1,44 +1,52 @@
+import base64
 from datetime import datetime
 
 from django.http import JsonResponse
-from django.db import connections
-from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db import connection
+
+import google.generativeai as genai
+
+genai.configure(api_key="AIzaSyDw8pJxo89LRpKy6UVJ_79hQVbSvY1fvHY")
+
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 
-def testvercel(request):
-    now = datetime.now()
-    html = f'''
-    <html>
-        <body>
-            <h1>Hello from Vercel!</h1>
-            <p>The current time is { now }.</p>
-        </body>
-    </html>
-    '''
-    return HttpResponse(html)
+def get_adjusted_query(user_query):
+    response = model.generate_content("Given the user query '{user_query}', adjust it to match the data in the following format: place_description or post_caption.")
+    
+    adjusted_query = response.text
+    return adjusted_query
 
-def get_users(request):
-    try:
-        # Get the database connection
-        with connections['default'].cursor() as cursor:
-            # Execute the SQL query to fetch users
-            cursor.execute('SELECT user_id, name, email, username FROM "User";')
-            # Fetch all rows from the executed query
-            rows = cursor.fetchall()
-
-        # Convert rows to a list of dictionaries
-        users = []
-        for row in rows:
-            user = {
-                'user_id': row[0],
-                'name': row[1],
-                'email': row[2],
-                'username': row[3]
-            }
-            users.append(user)
-
-        # Return the JSON response
-        return JsonResponse(users, safe=False)
-
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+@csrf_exempt
+def search_posts(request):
+    if request.method == 'POST':
+        query = request.POST.get('query', '')
+        adjusted_query = get_adjusted_query(query)
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT p.post_id, p.place_photo, p.place_city, p.place_description, p.post_caption, p.post_date, u.name AS user_name
+                FROM "Post" p
+                JOIN "User" u ON p.user_id = u.user_id
+                WHERE to_tsvector('indonesian', p.place_description || ' ' || p.post_caption) @@ to_tsquery('indonesian', %s)
+                """, [adjusted_query])
+            posts = cursor.fetchall()
+        
+        post_list = []
+        for post in posts:
+            place_photo = post[1]
+            # Convert binary data to base64-encoded string
+            if place_photo:
+                place_photo = base64.b64encode(place_photo).decode('utf-8')
+            post_list.append({
+                'post_id': post[0],
+                'place_photo': place_photo,
+                'place_city': post[2],
+                'place_description': post[3],
+                'post_caption': post[4],
+                'post_date': post[5],
+                'user_name': post[6]
+            })
+        
+        return JsonResponse({'posts': post_list})
