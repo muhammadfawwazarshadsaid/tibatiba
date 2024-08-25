@@ -158,6 +158,7 @@ from pathlib import Path
 
 import os
 
-base_dir = '/Users/arshad/Documents/tibatiba/TIBATIBA'
-GEOIP_PATH = os.path.join(base_dir, 'oleholeh', 'GeoLite2-City.mmdb')
-print(os.path.exists(GEOIP_PATH))  # Ini harus True jika path benar
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Get path from environment variable or default to a relative path
+GEOIP_PATH = os.getenv('GEOIP_PATH', os.path.join(BASE_DIR, 'oleholeh', 'GeoLite2-City.mmdb'))
