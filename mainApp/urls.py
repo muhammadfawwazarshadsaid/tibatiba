@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import get_users, testvercel, RegisterUserView
+from .views import get_users, logout, register, login
 app_name = 'mainApp'
 urlpatterns = [
-    path('', testvercel, name='testvercel'),
     path('users/', get_users, name='get_users'),
-     path('register/', RegisterUserView.as_view(), name='register'),
+    path('register/', register, name='register'),
+    path('login/', login, name='login'),
+    path('logout/', logout, name='logout'),
+    
 ]
